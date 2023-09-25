@@ -1,0 +1,28 @@
+<form (ngSubmit)="addTimer()">
+  <div class="form-group">
+    <div class="form-item">
+      <label for="timerName">Name</label>
+      <input type="text" id="timerName" name="timerName" [(ngModel)]="timerName" class="form-control">
+    </div>
+    <div class="form-item">
+      <label for="timerDate">Countdown to date</label>
+      <input type="date" id="timerDate" name="timerDate" [(ngModel)]="timerDate" class="form-control">
+
+    </div>
+    <div class="form-item">
+      <label for="timerTime">Time</label>
+      <input type="time" id="timerTime" name="timerTime" [(ngModel)]="timerTime" class="form-control"
+      >
+    </div>
+    <button type="submit" class="btn btn-primary">Add new Countdown Timer</button>
+  </div>
+</form>
+<div *ngFor="let timer of timers$ | async" class="timers-wrapper">
+  <span>Name: {{timer.name}} </span>
+  <span>Time: {{secondsToHms(timer.seconds)}} </span>
+  <span>Paused: {{timer.paused}} </span>
+  <button *ngIf="!timer.paused" (click)="pauseTimer(timer)" type="button" class="btn btn-primary"> Pause</button>
+  <button *ngIf="timer.paused" (click)="pauseTimer(timer)" type="button" class="btn btn-primary"> Start </button>
+</div>
+
+
