@@ -11,3 +11,16 @@
   padding-bottom: 1rem;
   align-items: center;
 }
+
+.timer-item {
+  width: 6rem;
+}
+
+.timer-item-name {
+  width: 8rem;
+  overflow-wrap: break-word;
+}
+
+.timer-finished {
+  width: 12rem;
+}

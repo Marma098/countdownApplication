@@ -39,34 +39,32 @@
   *ngFor="let timer of timers$ | async; trackBy: trackTimers"
   class="timers-wrapper"
 >
-  <span>Name: {{ timer.name }} </span>
-  <span *ngIf="timer.duration.years()">{{ timer.duration.years() }} years</span>
-  <span *ngIf="timer.duration.months()"
-    >{{ timer.duration.months() }} months</span
+  <span class="timer-item-name">Name: {{ timer.name }} </span>
+  <ng-container *ngIf="timer.timeInSeconds !== 0">
+    <span class="timer-item">{{ timer.duration.years() ?? 0 }} years</span>
+    <span class="timer-item">{{ timer.duration.months() ?? 0 }} months</span>
+    <span class="timer-item">{{ timer.duration.days() ?? 0 }} day</span>
+    <span class="timer-item">{{ timer.duration.hours() ?? 0 }} hours</span>
+    <span class="timer-item">{{ timer.duration.minutes() ?? 0 }} minutes</span>
+    <span class="timer-item">{{ timer.duration.seconds() ?? 0 }} seconds</span>
+    <button
+      *ngIf="!timer.paused"
+      (click)="pauseTimer(timer)"
+      type="button"
+      class="btn btn-primary timer-item"
+    >
+      Pause
+    </button>
+    <button
+      *ngIf="timer.paused"
+      (click)="pauseTimer(timer)"
+      type="button"
+      class="btn btn-primary timer-item"
+    >
+      Start
+    </button>
+  </ng-container>
+  <span class="timer-finished" *ngIf="timer.timeInSeconds === 0"
+    >Countdown finished</span
   >
-  <span *ngIf="timer.duration.days()">{{ timer.duration.days() }} day</span>
-  <span *ngIf="timer.duration.hours()">{{ timer.duration.hours() }} hours</span>
-  <span *ngIf="timer.duration.minutes()"
-    >{{ timer.duration.minutes() }} minutes</span
-  >
-  <span *ngIf="timer.duration.seconds()"
-    >{{ timer.duration.seconds() }} seconds</span
-  >
-  <span *ngIf="timer.timeInSeconds === 0">Countdown finished</span>
-  <button
-    *ngIf="!timer.paused"
-    (click)="pauseTimer(timer)"
-    type="button"
-    class="btn btn-primary"
-  >
-    Pause
-  </button>
-  <button
-    *ngIf="timer.paused"
-    (click)="pauseTimer(timer)"
-    type="button"
-    class="btn btn-primary"
-  >
-    Start
-  </button>
 </div>
