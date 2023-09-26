@@ -8,7 +8,6 @@ import { Timer } from '../models/timer.model';
 import { interval, Observable, Subject, takeUntil } from 'rxjs';
 import * as moment from 'moment';
 import { now } from 'moment';
-import 'moment-countdown';
 import { TimersService } from '../services/timers.service';
 import { TimerQuery } from '../store/timer.query';
 import { LocalStorageService } from '../services/localStorage.service';
