@@ -65,23 +65,23 @@ export class TimerComponent implements OnInit, OnDestroy {
   }
 
   private runCountdown() {
-    this.timers.forEach((timer: Timer, index: number) => {
+    this.timers.forEach((timer: Timer) => {
       if (!timer.paused) {
-        let time = this.timers[index].duration.asMilliseconds();
+        let time = timer.duration.asMilliseconds();
         let seconds: number = 0;
         if (time > 1000) {
           seconds = Number(moment(time).subtract(1, 'seconds')) / 1000;
         }
         let duration = moment.duration(seconds, 'seconds');
 
-        const timer: Timer = {
-          id: this.timers[index].id,
-          name: this.timers[index].name,
-          paused: this.timers[index].paused,
+        const timerToUpdate: Timer = {
+          id: timer.id,
+          name: timer.name,
+          paused: timer.paused,
           duration: duration,
           timeInSeconds: seconds,
         };
-        this.timerService.updateTimer(timer);
+        this.timerService.updateTimer(timerToUpdate);
       }
     });
   }
