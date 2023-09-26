@@ -8,29 +8,25 @@ import { Duration } from 'moment';
   providedIn: 'root',
 })
 export class TimersService {
-  private readonly store: TimerStore;
-
-  constructor(timerStore: TimerStore) {
-    this.store = timerStore;
-  }
+  constructor(private readonly timerStore: TimerStore) {}
 
   public createTimer(
     name: string,
     duration: Duration,
     timeInSeconds: number,
-    paused?: boolean
+    paused: boolean
   ) {
     const timer: Timer = {
       id: uuid(),
       name: name,
       duration: duration,
-      paused: paused ?? false,
       timeInSeconds: timeInSeconds,
+      paused: paused,
     };
-    this.store.createTimer(timer);
+    this.timerStore.createTimer(timer);
   }
 
   public updateTimer(timer: Timer) {
-    this.store.updateTimer(timer);
+    this.timerStore.updateTimer(timer);
   }
 }

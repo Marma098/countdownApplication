@@ -24,19 +24,17 @@ export class TimerComponent implements OnInit, OnDestroy {
   public timerDate = '';
   public timers: Timer[] = [];
   public timers$: Observable<Timer[]>;
-  private subscription = new Subject();
-  private numberOfTimers = 0;
+  private subscription = new Subject<boolean>();
 
   constructor(
-    private timerService: TimersService,
-    private timerQuery: TimerQuery,
-    private localStorageService: LocalStorageService
+    private readonly timerService: TimersService,
+    private readonly timerQuery: TimerQuery,
+    private readonly localStorageService: LocalStorageService
   ) {
     this.loadCachedTimers();
     this.timers$ = this.timerQuery.selectAllTimers();
     this.timers$.pipe(takeUntil(this.subscription)).subscribe((value) => {
       this.timers = value;
-      this.numberOfTimers = value.length;
     });
   }
 
@@ -105,7 +103,7 @@ export class TimerComponent implements OnInit, OnDestroy {
   private loadCachedTimers() {
     const cachedTimers: Timer[] =
       this.localStorageService.loadData('timerValues');
-    if (cachedTimers !== null && Object.keys(cachedTimers).length !== 0) {
+    if (cachedTimers.length !== 0) {
       cachedTimers.forEach((value) => {
         this.timerService.createTimer(
           value.name,

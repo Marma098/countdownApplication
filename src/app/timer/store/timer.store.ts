@@ -2,9 +2,7 @@ import { Injectable } from '@angular/core';
 import { EntityStore, StoreConfig, EntityState } from '@datorama/akita';
 import { Timer } from '../models/timer.model';
 
-export interface TimerState extends EntityState<Timer, string> {
-  highestId: number;
-}
+export interface TimerState extends EntityState<Timer, string> {}
 
 @Injectable({
   providedIn: 'root',
