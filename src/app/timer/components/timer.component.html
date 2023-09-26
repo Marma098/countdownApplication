@@ -25,7 +25,7 @@
   <span *ngIf="timer.duration.hours()">{{timer.duration.hours()}} hours</span>
   <span *ngIf="timer.duration.minutes()">{{timer.duration.minutes()}} minutes</span>
   <span *ngIf="timer.duration.seconds()">{{timer.duration.seconds()}} seconds</span>
-  <span *ngIf="timer.duration.seconds() === 0">Countdown finished</span>
+  <span *ngIf="timer.timeInSeconds === 0">Countdown finished</span>
   <span>Paused: {{timer.paused}} </span>
   <button *ngIf="!timer.paused" (click)="pauseTimer(timer)" type="button" class="btn btn-primary"> Pause</button>
   <button *ngIf="timer.paused" (click)="pauseTimer(timer)" type="button" class="btn btn-primary"> Start</button>
