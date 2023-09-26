@@ -2,9 +2,11 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Timer } from '../models/timer.model';
 import { interval, Observable, Subject, takeUntil } from 'rxjs';
 import * as moment from 'moment';
+import 'moment-countdown';
 import { TimersService } from '../services/timers.service';
 import { TimerQuery } from '../store/timer.query';
 import { LocalStorageService } from '../services/localStorage.service';
+import { Duration, duration, now } from 'moment';
 
 @Component({
   selector: 'app-timer',
@@ -26,7 +28,7 @@ export class TimerComponent implements OnInit, OnDestroy {
   ) {
     this.loadCachedTimers();
     this.timers$ = this.timerQuery.selectAllTimers();
-    this.timers$.subscribe((value) => {
+    this.timers$.pipe(takeUntil(this.subscription)).subscribe((value) => {
       this.timers = value;
     });
   }
@@ -47,12 +49,16 @@ export class TimerComponent implements OnInit, OnDestroy {
 
   public addTimer() {
     const mergeTimeAndDate = this.timerDate + ' ' + this.timerTime;
-    const formattedFullTime = moment(mergeTimeAndDate).format(
+    const formattedTime = moment(mergeTimeAndDate).format(
       'MM DD YYYY HH:mm:ss'
     );
-    const remainingTime = moment(formattedFullTime).diff(new Date(), 'seconds');
+
+    const remainingTime = moment(formattedTime).diff(now(), 'seconds');
+    const duration = moment.duration(remainingTime, 'seconds');
+
     if (!isNaN(remainingTime) && remainingTime > 0) {
-      this.timerService.createTimer(this.timerName, remainingTime);
+      this.timerService.createTimer(this.timerName, duration);
+      this.runCountdown();
     } else {
       console.warn('Could´t create countdown timer');
     }
@@ -61,29 +67,23 @@ export class TimerComponent implements OnInit, OnDestroy {
   private runCountdown() {
     this.timers.forEach((timer: Timer, index: number) => {
       if (!timer.paused) {
+        let time = this.timers[index].duration.asMilliseconds();
+        let seconds: number = 0;
+        if (time > 1000) {
+          seconds = Number(moment(time).subtract(1, 'seconds')) / 1000;
+        }
+        let duration = moment.duration(seconds, 'seconds');
+
         const timer: Timer = {
           id: this.timers[index].id,
           name: this.timers[index].name,
           paused: this.timers[index].paused,
-          seconds: this.timers[index].seconds - 1,
+          duration: duration,
+          timeInSeconds: seconds,
         };
         this.timerService.updateTimer(timer);
       }
     });
-  }
-
-  public secondsToHms(input: number) {
-    const hours = Math.floor(input / 3600);
-    const minutes = Math.floor((input % 3600) / 60);
-    const seconds = Math.floor((input % 3600) % 60);
-
-    const hDisplay =
-      hours > 0 ? hours + (hours == 1 ? ' hour, ' : ' hours, ') : '';
-    const mDisplay =
-      minutes > 0 ? minutes + (minutes == 1 ? ' minute, ' : ' minutes, ') : '';
-    const sDisplay =
-      seconds > 0 ? seconds + (seconds == 1 ? ' second' : ' seconds') : '';
-    return hDisplay + mDisplay + sDisplay;
   }
 
   public pauseTimer(timer: Timer) {
@@ -93,19 +93,23 @@ export class TimerComponent implements OnInit, OnDestroy {
   }
 
   private loadCachedTimers() {
-    const cachedTimers = this.localStorageService.loadData('timerValues');
-    if (cachedTimers !== null) {
-      this.timers = cachedTimers;
-      this.timers.forEach((value) => {
-        this.timerService.createTimer(value.name, value.seconds, value.paused);
+    const cachedTimers: Timer[] =
+      this.localStorageService.loadData('timerValues');
+    if (cachedTimers !== null && Object.keys(cachedTimers).length !== 0) {
+      cachedTimers.forEach((value) => {
+        this.timerService.createTimer(
+          value.name,
+          moment.duration(value.timeInSeconds, 'seconds'),
+          value.paused,
+          value.timeInSeconds
+        );
       });
     }
   }
 
   private saveTimersToLocalStorage() {
     window.addEventListener('beforeunload', () => {
-      const dataToSave = this.timers;
-      this.localStorageService.saveData('timerValues', dataToSave);
+      this.localStorageService.saveData('timerValues', this.timers);
     });
   }
 }

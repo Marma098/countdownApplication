@@ -19,10 +19,16 @@
 </form>
 <div *ngFor="let timer of timers$ | async" class="timers-wrapper">
   <span>Name: {{timer.name}} </span>
-  <span>Time: {{secondsToHms(timer.seconds)}} </span>
+  <span *ngIf="timer.duration.years()">{{timer.duration.years()}} years</span>
+  <span *ngIf="timer.duration.months()">{{timer.duration.months()}} months</span>
+  <span *ngIf="timer.duration.days()">{{timer.duration.days()}} day</span>
+  <span *ngIf="timer.duration.hours()">{{timer.duration.hours()}} hours</span>
+  <span *ngIf="timer.duration.minutes()">{{timer.duration.minutes()}} minutes</span>
+  <span *ngIf="timer.duration.seconds()">{{timer.duration.seconds()}} seconds</span>
+  <span *ngIf="timer.duration.seconds() === 0">Countdown finished</span>
   <span>Paused: {{timer.paused}} </span>
   <button *ngIf="!timer.paused" (click)="pauseTimer(timer)" type="button" class="btn btn-primary"> Pause</button>
-  <button *ngIf="timer.paused" (click)="pauseTimer(timer)" type="button" class="btn btn-primary"> Start </button>
+  <button *ngIf="timer.paused" (click)="pauseTimer(timer)" type="button" class="btn btn-primary"> Start</button>
 </div>
 
 
