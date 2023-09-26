@@ -1,27 +1,31 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
 import { Timer } from '../models/timer.model';
 import { TimerStore } from '../store/timer.store';
 import { v4 as uuid } from 'uuid';
+import { Duration } from 'moment';
 @Injectable({
   providedIn: 'root',
 })
 export class TimersService {
   private readonly store: TimerStore;
-  public timersHaveChanged = new Subject();
 
   constructor(timerStore: TimerStore) {
     this.store = timerStore;
   }
 
-  public createTimer(name: string, time: number, paused?: boolean) {
+  public createTimer(
+    name: string,
+    duration: Duration,
+    paused?: boolean,
+    timeInSeconds?: number
+  ) {
     const timer: Timer = {
       id: uuid(),
       name: name,
-      seconds: time,
+      duration: duration,
       paused: paused ?? false,
+      timeInSeconds: timeInSeconds,
     };
-    this.timersHaveChanged.next(true);
     this.store.createTimer(timer);
   }
 
