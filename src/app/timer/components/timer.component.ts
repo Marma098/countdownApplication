@@ -1,17 +1,23 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { Timer } from '../models/timer.model';
 import { interval, Observable, Subject, takeUntil } from 'rxjs';
 import * as moment from 'moment';
+import { now } from 'moment';
 import 'moment-countdown';
 import { TimersService } from '../services/timers.service';
 import { TimerQuery } from '../store/timer.query';
 import { LocalStorageService } from '../services/localStorage.service';
-import { Duration, duration, now } from 'moment';
 
 @Component({
   selector: 'app-timer',
   templateUrl: './timer.component.html',
   styleUrls: ['./timer.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TimerComponent implements OnInit, OnDestroy {
   public timerName = '';
@@ -20,6 +26,7 @@ export class TimerComponent implements OnInit, OnDestroy {
   public timers: Timer[] = [];
   public timers$: Observable<Timer[]>;
   private subscription = new Subject();
+  private numberOfTimers = 0;
 
   constructor(
     private timerService: TimersService,
@@ -30,6 +37,7 @@ export class TimerComponent implements OnInit, OnDestroy {
     this.timers$ = this.timerQuery.selectAllTimers();
     this.timers$.pipe(takeUntil(this.subscription)).subscribe((value) => {
       this.timers = value;
+      this.numberOfTimers = value.length;
     });
   }
 
@@ -52,12 +60,16 @@ export class TimerComponent implements OnInit, OnDestroy {
     const formattedTime = moment(mergeTimeAndDate).format(
       'MM DD YYYY HH:mm:ss'
     );
-
     const remainingTime = moment(formattedTime).diff(now(), 'seconds');
     const duration = moment.duration(remainingTime, 'seconds');
 
     if (!isNaN(remainingTime) && remainingTime > 0) {
-      this.timerService.createTimer(this.timerName, duration);
+      this.timerService.createTimer(
+        this.timerName,
+        duration,
+        remainingTime,
+        false
+      );
       this.runCountdown();
     } else {
       console.warn('Could´t create countdown timer');
@@ -67,13 +79,12 @@ export class TimerComponent implements OnInit, OnDestroy {
   private runCountdown() {
     this.timers.forEach((timer: Timer) => {
       if (!timer.paused) {
-        let time = timer.duration.asMilliseconds();
-        let seconds: number = 0;
+        const time = timer.duration.asMilliseconds();
+        let seconds = 0;
         if (time > 1000) {
           seconds = Number(moment(time).subtract(1, 'seconds')) / 1000;
         }
-        let duration = moment.duration(seconds, 'seconds');
-
+        const duration = moment.duration(seconds, 'seconds');
         const timerToUpdate: Timer = {
           id: timer.id,
           name: timer.name,
@@ -100,8 +111,8 @@ export class TimerComponent implements OnInit, OnDestroy {
         this.timerService.createTimer(
           value.name,
           moment.duration(value.timeInSeconds, 'seconds'),
-          value.paused,
-          value.timeInSeconds
+          value.timeInSeconds,
+          value.paused
         );
       });
     }
@@ -111,5 +122,9 @@ export class TimerComponent implements OnInit, OnDestroy {
     window.addEventListener('beforeunload', () => {
       this.localStorageService.saveData('timerValues', this.timers);
     });
+  }
+
+  public trackTimers(index: number, timer: Timer) {
+    return timer.id;
   }
 }

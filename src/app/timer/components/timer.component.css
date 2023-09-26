@@ -1,11 +1,11 @@
-.form-group{
+.form-group {
   display: flex;
   flex-direction: column;
   gap: 1rem;
   width: 15rem;
 }
 
-.timers-wrapper{
+.timers-wrapper {
   display: flex;
   gap: 0.75rem;
   padding-bottom: 1rem;

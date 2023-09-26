@@ -3,6 +3,7 @@ import { Timer } from '../models/timer.model';
 import { TimerStore } from '../store/timer.store';
 import { v4 as uuid } from 'uuid';
 import { Duration } from 'moment';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -16,8 +17,8 @@ export class TimersService {
   public createTimer(
     name: string,
     duration: Duration,
-    paused?: boolean,
-    timeInSeconds?: number
+    timeInSeconds: number,
+    paused?: boolean
   ) {
     const timer: Timer = {
       id: uuid(),

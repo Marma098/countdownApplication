@@ -2,33 +2,72 @@
   <div class="form-group">
     <div class="form-item">
       <label for="timerName">Name</label>
-      <input type="text" id="timerName" name="timerName" [(ngModel)]="timerName" class="form-control">
+      <input
+        type="text"
+        id="timerName"
+        name="timerName"
+        [(ngModel)]="timerName"
+        class="form-control"
+      />
     </div>
     <div class="form-item">
       <label for="timerDate">Countdown to date</label>
-      <input type="date" id="timerDate" name="timerDate" [(ngModel)]="timerDate" class="form-control">
-
+      <input
+        type="date"
+        id="timerDate"
+        name="timerDate"
+        [(ngModel)]="timerDate"
+        class="form-control"
+      />
     </div>
     <div class="form-item">
       <label for="timerTime">Time</label>
-      <input type="time" id="timerTime" name="timerTime" [(ngModel)]="timerTime" class="form-control"
-      >
+      <input
+        type="time"
+        id="timerTime"
+        name="timerTime"
+        [(ngModel)]="timerTime"
+        class="form-control"
+      />
     </div>
-    <button type="submit" class="btn btn-primary">Add new Countdown Timer</button>
+    <button type="submit" class="btn btn-primary">
+      Add new Countdown Timer
+    </button>
   </div>
 </form>
-<div *ngFor="let timer of timers$ | async" class="timers-wrapper">
-  <span>Name: {{timer.name}} </span>
-  <span *ngIf="timer.duration.years()">{{timer.duration.years()}} years</span>
-  <span *ngIf="timer.duration.months()">{{timer.duration.months()}} months</span>
-  <span *ngIf="timer.duration.days()">{{timer.duration.days()}} day</span>
-  <span *ngIf="timer.duration.hours()">{{timer.duration.hours()}} hours</span>
-  <span *ngIf="timer.duration.minutes()">{{timer.duration.minutes()}} minutes</span>
-  <span *ngIf="timer.duration.seconds()">{{timer.duration.seconds()}} seconds</span>
+<div
+  *ngFor="let timer of timers$ | async; trackBy: trackTimers"
+  class="timers-wrapper"
+>
+  <span>Name: {{ timer.name }} </span>
+  <span *ngIf="timer.duration.years()">{{ timer.duration.years() }} years</span>
+  <span *ngIf="timer.duration.months()"
+    >{{ timer.duration.months() }} months</span
+  >
+  <span *ngIf="timer.duration.days()">{{ timer.duration.days() }} day</span>
+  <span *ngIf="timer.duration.hours()">{{ timer.duration.hours() }} hours</span>
+  <span *ngIf="timer.duration.minutes()"
+    >{{ timer.duration.minutes() }} minutes</span
+  >
+  <span *ngIf="timer.duration.seconds()"
+    >{{ timer.duration.seconds() }} seconds</span
+  >
   <span *ngIf="timer.timeInSeconds === 0">Countdown finished</span>
-  <span>Paused: {{timer.paused}} </span>
-  <button *ngIf="!timer.paused" (click)="pauseTimer(timer)" type="button" class="btn btn-primary"> Pause</button>
-  <button *ngIf="timer.paused" (click)="pauseTimer(timer)" type="button" class="btn btn-primary"> Start</button>
+  <span>Paused: {{ timer.paused }} </span>
+  <button
+    *ngIf="!timer.paused"
+    (click)="pauseTimer(timer)"
+    type="button"
+    class="btn btn-primary"
+  >
+    Pause
+  </button>
+  <button
+    *ngIf="timer.paused"
+    (click)="pauseTimer(timer)"
+    type="button"
+    class="btn btn-primary"
+  >
+    Start
+  </button>
 </div>
-
-

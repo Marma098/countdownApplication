@@ -5,5 +5,5 @@ export interface Timer {
   name: string;
   duration: Duration;
   paused: boolean;
-  timeInSeconds?: number;
+  timeInSeconds: number;
 }
