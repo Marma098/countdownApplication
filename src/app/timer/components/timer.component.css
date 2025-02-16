@@ -1,26 +1,13 @@
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  width: 15rem;
+.card {
+  border-radius: 16px;
 }
 
-.timers-wrapper {
-  display: flex;
-  gap: 0.75rem;
-  padding-bottom: 1rem;
-  align-items: center;
+.badge {
+  font-size: 1rem;
+  padding: 10px;
+  border-radius: 8px;
 }
 
-.timer-item {
-  width: 6rem;
-}
-
-.timer-item-name {
-  width: 8rem;
-  overflow-wrap: break-word;
-}
-
-.timer-finished {
-  width: 12rem;
+.btn {
+  font-weight: bold;
 }
